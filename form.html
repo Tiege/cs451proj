@@ -1,0 +1,130 @@
+<html>
+   <body>
+      <h1 align=center>KNOW WHAT YOU EAT</h1><hr>
+      <table border=1px><tr><td><table><tr><td align=center>
+      <form action = "/search" method = "GET">
+         Search Farmer: <input type = "text" name = "srch">
+         </td></tr><tr><td align=center><input type = "submit" value = "Submit"></td></tr></table>
+      </form></td><td></td><td><table><tr><td align=center>
+	<form action="/dropdown" method="GET">
+	Select produce:
+	<select class="selectProduce" data-style="btn-info" name="selectProduce">
+        <optgroup>
+            <option value="Apple">Apple</option>
+            <option value="Apricot">Apricot</option>
+            <option value="Banana">Banana</option>
+            <option value="Cantaloupe">Cantaloupe</option>
+	    <option value="Cherry">Cherry</option>
+            <option value="Grape">Grape</option>
+            <option value="Kiwi">Kiwi</option>
+            <option value="Mango">Mango</option>
+	    <option value="Orange">Orange</option>
+	    <option value="Peach">Peach</option>
+	    <option value="Pear">Pear</option>
+            <option value="Pineapple">Pineapple</option>
+	    <option value="Pomegranate">Pomegranate</option>
+            <option value="Strawberry">Strawberry</option> 
+            <option value="Watermelon">Watermelon</option>   
+        </optgroup>
+	</select></td></tr><tr><td align=center>
+	<input type="submit" value = "Submit">
+</form></td></tr></table>
+</td><td><table><tr><td align=center>Order By:</td></tr><tr><td align=center>
+<form action="/order" method="GET">
+	<select class="selectOrder" data-style="btn-info" name="selectOrder">
+        <optgroup>
+            <option value="price">Price</option>
+            <option value="farmer">Farmer</option>
+            <option value="location">Location</option>
+	    <option value="crop">Crop</option>
+            <option value="yield">Yield</option>
+            <option value="Pesticide">Pesticide</option>
+        </optgroup>
+	</select>
+</form></td></tr></table></td>
+<td><table><tr><td align=center>Select Month:</td></tr><tr><td align=center>
+<form action="/monthr" method="GET">
+	<select class="selectMonth" data-style="btn-info" name="selectMonth">
+        <optgroup>
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+	    <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+	    <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+        </optgroup>
+	</select>
+</form></td></tr></table></td><td><table><tr><td align=center>
+<form action = "/location" method = "GET">
+         Location (zipcode): <input type = "text" name = "srch"></td></tr><tr><td align=center>
+         <input type = "submit" value = "Submit">
+      </form></td></tr></table></td><td><table><tr><td align=center>
+<form action = "/searchStore" method = "GET">
+         Search Store: <input type = "text" name = "srch"></td></tr><tr><td align=center>
+         <input type = "submit" value = "Submit">
+      </form></td></tr></table></td>
+</tr></table>
+<hr>
+<table border=0px cellpadding="20" id="resTable">
+<tr border=0px>
+<td id="h1" align=center></td><td id="h2" align=center></td><td id="h3" align=center></td><td id="h4" align=center></td><td id="h5" align=center></td>
+</tr>
+</table>
+<script>
+function qqs(search_for) {
+		var query = window.location.search.substring(1);
+		var parms = query.split('&');
+		for (var i=0; i<parms.length; i++) {
+			var pos = parms[i].indexOf('=');
+			if (pos > 0  && search_for == parms[i].substring(0,pos)) {
+				return parms[i].substring(pos+1);;
+			}
+		}
+		return "";
+	}
+document.write(qqs("data"));
+
+window.onload = function() {
+	var rT = document.getElementById("resTable");
+	var first = location.search.substring(1).split(",");
+	var parsed = [];
+
+	for (i = 0; i < first.length; i++) {
+		parsed[i] = first[i].replace("%20", ' ');
+	}
+
+	if (first[0] == 'farmer') {
+		document.getElementById("h1").innerHTML = "Farmer";
+		document.getElementById("h2").innerHTML = "State";
+		document.getElementById("h3").innerHTML = "Zipcode";
+		document.getElementById("h4").innerHTML = "Produce";
+	}
+
+	/*table = document.createElement('table');
+
+	for (var i = 0; i < 2; i++) {
+    var tr = document.createElement('tr');
+
+    tr.appendChild( document.createElement('td') );
+    tr.appendChild( document.createElement('td') );
+    tr.appendChild( document.createElement('td') );
+    tr.appendChild( document.createElement('td') );
+
+    tr.cells[0].appendChild( document.createTextNode(parsed[1]) )
+    tr.cells[1].appendChild( document.createTextNode(parsed[2]) );
+
+    table.appendChild(tr);
+}
+
+	rT.appendChild(table);*/
+}
+</script>
+
+</body>
+</html>

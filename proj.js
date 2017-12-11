@@ -1,3 +1,6 @@
+/***** TREVOR JONES ***** FINAL PROJECT CS 451 **********************
+* This web app uses Node.js along with express to produce a frontend html webpage. The backend is connected to a mysql database with fictional entries for data. The user can display data from multiple tables in the database by using the webpage UI. Order By is not working currently.
+********************************************************************/
 var http = require('http');
 var fs = require('fs');
 var formidable = require("formidable");
@@ -14,19 +17,13 @@ var con = mysql.createConnection({
 const express = require('express');
 const app = express();
 
-/* FOR FORMATTING RES.SEND
-html string that will be send to browser
-var reo ='<html><head><title>Node.js MySQL Select</title></head><body><h1>Node.js MySQL Select</h1>{${table}}</body></html>';
+//path for imgs
+process.env.PWD = process.cwd()
 
-      var table =''; //to store html table
+//global query = state
+glob = "";
 
-      //create html table with data from res.
-      for(var i=0; i<res.length; i++){
-        table +='<tr><td>'+ (i+1) +'</td><td>'+ res[i].name +'</td><td>'+ res[i].address +'</td></tr>';
-      }
-      table ='<table border="1"><tr><th>Nr.</th><th>Name</th><th>Address</th></tr>'+ table +'</table>';
-*/
-
+//index
 app.get('/', function (req, res)  {
      res.sendFile( __dirname + "/" + "form.html");
 });
@@ -36,7 +33,7 @@ app.get('/search', function (req, res) {
    query = req.query.srch;
           con.query("SELECT * FROM farmer WHERE farm_name LIKE '" + query + "%'", function (err, results) {
             if (err) throw err;
-
+	    //place results in array for passing as parameters to form.html
             var row = [];
             for (var i = 0; i < results.length; i++) {
               row[i] = results[i];
@@ -48,19 +45,117 @@ app.get('/search', function (req, res) {
                end.push(row[i].zipcode);
                end.push(row[i].produce);
 	    }
-
+	    //send data to frontend as parameters
             res.redirect('/?farmer,' + end);
      });
 });
 
-//Drop down query
+//Drop down query produce
 app.get('/dropdown', function (req, res) {
    query = req.query.selectProduce;
-          con.query("SELECT * FROM " + query, function (err, results) {
+          con.query("SELECT crop_name, price_retail, shelf_life, pesticides, season, farm_name FROM crops c JOIN farmer f ON c.crop_name=f.produce WHERE crop_name='" + query + "'", function (err, results) {
             if (err) throw err;
-            res.send(results[0]);
+            //place results in array for passing as parameters to form.html
+            var row = [];
+            for (var i = 0; i < results.length; i++) {
+              row[i] = results[i];
+            }
+	    var end = [];
+            for (var i = 0; i < row.length; i++) {
+	       end.push(row[i].crop_name);
+	       end.push(row[i].price_retail);
+               end.push(row[i].shelf_life);
+               end.push(row[i].pesticides);
+	       end.push(row[i].season);
+	       end.push(row[i].farm_name);
+	    }
+	    //send data to frontend as parameters
+            res.redirect('/?crop,' + end);
      });
 });
 
+//Location query
+app.get('/location', function (req, res) {
+   query = req.query.srch;
+	var end = [];
+          con.query("SELECT DISTINCT store_name, zipcode FROM stores WHERE zipcode LIKE '" + query + "%'", function (err, results) {
+            if (err) throw err;
+	    //place results in array for passing as parameters to form.html
+            var row = [];
+            for (var i = 0; i < results.length; i++) {
+              row[i] = results[i];
+            }
+	    
+            for (var i = 0; i < row.length; i++) {
+	       end.push(row[i].store_name);
+	       end.push(row[i].zipcode);
+	    }
+	});
+
+	   con.query("SELECT DISTINCT farm_name, zipcode FROM farmer WHERE zipcode LIKE '" + query + "%'", function (err, results) {
+            if (err) throw err;
+	    //place results in array for passing as parameters to form.html
+            var row = [];
+            for (var i = 0; i < results.length; i++) {
+              row[i] = results[i];
+            }
+            for (var i = 0; i < row.length; i++) {
+	       end.push(row[i].farm_name);
+	       end.push(row[i].zipcode);
+	    }
+	    //send data to frontend as parameters
+            res.redirect('/?location,' + end);
+     });
+});
+
+//Search month
+app.get('/month', function (req, res) {
+   query = req.query.selectMonth;
+          con.query("SELECT month, crop, organic, grow_time FROM harvest WHERE month LIKE '" + query + "%'", function (err, results) {
+            if (err) throw err;
+		console.log(results);
+	    //place results in array for passing as parameters to form.html
+            var row = [];
+            for (var i = 0; i < results.length; i++) {
+              row[i] = results[i];
+            }
+	    var end = [];
+            for (var i = 0; i < row.length; i++) {
+	       end.push(row[i].month);
+	       end.push(row[i].crop);
+               end.push(row[i].organic);
+	       end.push(row[i].grow_time);
+	    }
+            //send data to frontend as parameters
+            res.redirect('/?harvest,' + end);
+     });
+});
+
+//Search store
+app.get('/searchStore', function (req, res) {
+   query = req.query.srch;
+          con.query("SELECT * FROM stores WHERE store_name LIKE '" + query + "%' GROUP BY produce_sold", function (err, results) {
+            if (err) throw err;
+	    //place results in array for passing as parameters to form.html
+            var row = [];
+            for (var i = 0; i < results.length; i++) {
+              row[i] = results[i];
+            }
+	    var end = [];
+            for (var i = 0; i < row.length; i++) {
+	       end.push(row[i].store_name);
+	       end.push(row[i].state);
+               end.push(row[i].zipcode);
+               end.push(row[i].produce_sold);
+	       end.push(row[i].produce_price);
+               end.push(row[i].quantity);
+	    }
+            //send data to frontend as parameters
+            res.redirect('/?store,' + end);
+     });
+});
+
+//serve resources
+app.use(express.static(process.env.PWD + '/img'));
 //port listening
 app.listen(8890);

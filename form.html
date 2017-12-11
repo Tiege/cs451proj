@@ -1,6 +1,7 @@
 <html>
    <body>
-      <h1 align=center>KNOW WHAT YOU EAT</h1><hr>
+	<table width="100%"><tr><td><img src="fruits.jpg" height="80%"></td><td>
+      <h1 align=center>KNOW WHAT YOU EAT</h1></td><td><img src="fruits.jpg" height="80%"></td></tr></table><hr>
       <table border=1px><tr><td><table><tr><td align=center>
       <form action = "/search" method = "GET">
          Search Farmer: <input type = "text" name = "srch">
@@ -10,21 +11,21 @@
 	Select produce:
 	<select class="selectProduce" data-style="btn-info" name="selectProduce">
         <optgroup>
-            <option value="Apple">Apple</option>
-            <option value="Apricot">Apricot</option>
-            <option value="Banana">Banana</option>
-            <option value="Cantaloupe">Cantaloupe</option>
-	    <option value="Cherry">Cherry</option>
-            <option value="Grape">Grape</option>
-            <option value="Kiwi">Kiwi</option>
-            <option value="Mango">Mango</option>
-	    <option value="Orange">Orange</option>
-	    <option value="Peach">Peach</option>
-	    <option value="Pear">Pear</option>
-            <option value="Pineapple">Pineapple</option>
-	    <option value="Pomegranate">Pomegranate</option>
-            <option value="Strawberry">Strawberry</option> 
-            <option value="Watermelon">Watermelon</option>   
+            <option value="apple">Apple</option>
+            <option value="apricot">Apricot</option>
+            <option value="banana">Banana</option>
+            <option value="cantaloupe">Cantaloupe</option>
+	    <option value="cherry">Cherry</option>
+            <option value="grape">Grape</option>
+            <option value="kiwi">Kiwi</option>
+            <option value="mango">Mango</option>
+	    <option value="orange">Orange</option>
+	    <option value="peach">Peach</option>
+	    <option value="pear">Pear</option>
+            <option value="pineapple">Pineapple</option>
+	    <option value="pomegranate">Pomegranate</option>
+            <option value="strawberry">Strawberry</option> 
+            <option value="watermelon">Watermelon</option>   
         </optgroup>
 	</select></td></tr><tr><td align=center>
 	<input type="submit" value = "Submit">
@@ -43,8 +44,8 @@
 	</select>
 </form></td></tr></table></td>
 <td><table><tr><td align=center>Select Month:</td></tr><tr><td align=center>
-<form action="/monthr" method="GET">
-	<select class="selectMonth" data-style="btn-info" name="selectMonth">
+<form action="/month" method="GET">
+	<select class="selectMonth" data-style="btn-info" name="selectMonth" onchange="this.form.submit()">
         <optgroup>
             <option value="January">January</option>
             <option value="February">February</option>
@@ -73,7 +74,7 @@
 <hr>
 <table border=0px cellpadding="20" id="resTable">
 <tr border=0px>
-<td id="h1" align=center></td><td id="h2" align=center></td><td id="h3" align=center></td><td id="h4" align=center></td><td id="h5" align=center></td>
+<td id="h1" align=center></td><td id="h2" align=center></td><td id="h3" align=center></td><td id="h4" align=center></td><td id="h5" align=center></td><td id="h6" align=center></td>
 </tr>
 </table>
 <script>
@@ -97,32 +98,138 @@ window.onload = function() {
 
 	for (i = 0; i < first.length; i++) {
 		parsed[i] = first[i].replace("%20", ' ');
+		if (parsed[i] == '')
+			parsed[i] = '---';
 	}
-
-	if (first[0] == 'farmer') {
+	switch (first[0]) {
+		case 'farmer':
 		document.getElementById("h1").innerHTML = "Farmer";
 		document.getElementById("h2").innerHTML = "State";
 		document.getElementById("h3").innerHTML = "Zipcode";
 		document.getElementById("h4").innerHTML = "Produce";
+
+		lead = [];
+	
+	for (var i = 1; i < parsed.length; i++) {
+		if ( (i-1) % 4 == 0)
+			lead.push(parsed[i]); 
+	}
+	index = 0;
+	for (var i = 0; i < lead.length; i++) {
+		tr = document.createElement('tr');
+		for (var n = 0; n < 4; n++) {
+			tr.appendChild( document.createElement('td') );
+			tr.cells[n].appendChild( document.createTextNode(parsed[index+1]) );
+			index++;
+		}
+	rT.appendChild(tr);
 	}
 
-	/*table = document.createElement('table');
 
-	for (var i = 0; i < 2; i++) {
-    var tr = document.createElement('tr');
+		break;
+		case 'crop':
+		document.getElementById("h1").innerHTML = "Crop";
+		document.getElementById("h2").innerHTML = "Price";
+		document.getElementById("h3").innerHTML = "Shelf Life";
+		document.getElementById("h4").innerHTML = "Pesticides";
+		document.getElementById("h5").innerHTML = "Season";
+		document.getElementById("h6").innerHTML = "Grown By";
 
-    tr.appendChild( document.createElement('td') );
-    tr.appendChild( document.createElement('td') );
-    tr.appendChild( document.createElement('td') );
-    tr.appendChild( document.createElement('td') );
+		lead = [];
+	
+	for (var i = 1; i < parsed.length; i++) {
+		if ( (i-1) % 6 == 0)
+			lead.push(parsed[i]); 
+	}
+	index = 0;
+	for (var i = 0; i < lead.length; i++) {
+		tr = document.createElement('tr');
+		for (var n = 0; n < 6; n++) {
+			tr.appendChild( document.createElement('td') );
+			tr.cells[n].appendChild( document.createTextNode(parsed[index+1]) );
+			index++;
+		}
+	rT.appendChild(tr);
+	}
+	break;
+		case 'location':
+		document.getElementById("h1").innerHTML = "Farm/Store";
+		document.getElementById("h2").innerHTML = "Zipcode";
 
-    tr.cells[0].appendChild( document.createTextNode(parsed[1]) )
-    tr.cells[1].appendChild( document.createTextNode(parsed[2]) );
+		lead = [];
+	
+	for (var i = 1; i < parsed.length; i++) {
+		if ( (i-1) % 2 == 0)
+			lead.push(parsed[i]); 
+	}
+	index = 0;
+	for (var i = 0; i < lead.length; i++) {
+		tr = document.createElement('tr');
+		for (var n = 0; n < 2; n++) {
+			tr.appendChild( document.createElement('td') );
+			tr.cells[n].appendChild( document.createTextNode(parsed[index+1]) );
+			index++;
+		}
+	rT.appendChild(tr);
+	}
+	break;
 
-    table.appendChild(tr);
-}
+	case 'harvest':
+		document.getElementById("h1").innerHTML = "Month";
+		document.getElementById("h2").innerHTML = "Crop";
+		document.getElementById("h3").innerHTML = "Organic? Y/N";
+		document.getElementById("h4").innerHTML = "Grow Time";
 
-	rT.appendChild(table);*/
+		lead = [];
+	
+	for (var i = 1; i < parsed.length; i++) {
+		if ( (i-1) % 4 == 0)
+			lead.push(parsed[i]); 
+	}
+	index = 0;
+	for (var i = 0; i < lead.length; i++) {
+		tr = document.createElement('tr');
+		for (var n = 0; n < 4; n++) {
+			tr.appendChild( document.createElement('td') );
+			tr.cells[n].appendChild( document.createTextNode(parsed[index+1]) );
+			index++;
+		}
+	rT.appendChild(tr);
+	}
+
+
+		break;
+
+	case 'store':
+		document.getElementById("h1").innerHTML = "Store";
+		document.getElementById("h2").innerHTML = "State";
+		document.getElementById("h3").innerHTML = "Zipcode";
+		document.getElementById("h4").innerHTML = "Produce Sold";
+		document.getElementById("h5").innerHTML = "Price";
+		document.getElementById("h6").innerHTML = "Quantity";
+
+		lead = [];
+	
+	for (var i = 1; i < parsed.length; i++) {
+		if ( (i-1) % 6 == 0)
+			lead.push(parsed[i]); 
+	}
+	index = 0;
+	for (var i = 0; i < lead.length; i++) {
+		tr = document.createElement('tr');
+		for (var n = 0; n < 6; n++) {
+			tr.appendChild( document.createElement('td') );
+			tr.cells[n].appendChild( document.createTextNode(parsed[index+1]) );
+			index++;
+		}
+	rT.appendChild(tr);
+	}
+
+
+		break;
+	}
+
+	
 }
 </script>
 
